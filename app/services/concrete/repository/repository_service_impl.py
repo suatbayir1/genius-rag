@@ -31,6 +31,4 @@ class RepositoryServiceImpl(RepositoryService):
 
         self.vector_db_service.save(parsed_repository, embedding_vector, repository_url)
 
-        return RepositoryResponse(
-            repository_url=repository_url, parsed_repository=parsed_repository, embedding_vector=embedding_vector
-        )
+        return RepositoryResponse(repository_url=repository_url)
