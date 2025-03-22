@@ -3,11 +3,11 @@ from typing import List
 import chromadb
 
 from app.config import settings
-from app.services.abstract.database.VectorDBService import VectorDBService
+from app.repositories.RepositoryRepository import RepositoryRepository
 
 
-class ChromaDBService(VectorDBService):
-    """Implement the VectorDBService interface using ChromaDB."""
+class ChromaDBRepositoryRepository(RepositoryRepository):
+    """Implement the ChromaDB repository using Repository interface."""
 
     def __init__(self):
         """Initialize the ChromaDB client and collection."""

@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List
 
 
-class VectorDBService(ABC):
-    """Abstract base class for a vector database service."""
+class RepositoryRepository(ABC):
+    """Abstract repository class for a repository."""
 
     @abstractmethod
     def save(self, document: str, embedding: List[float], document_id: str) -> None:

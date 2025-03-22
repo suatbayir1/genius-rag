@@ -1,7 +1,9 @@
-from app.services.abstract.database.VectorDBService import VectorDBService
-from app.services.concrete.database.ChromaDBService import ChromaDBService
+from app.repositories.repository.ChromaDBRepositoryRepository import (
+    ChromaDBRepositoryRepository,
+)
+from app.repositories.RepositoryRepository import RepositoryRepository
 
 
-def get_vector_db_service() -> VectorDBService:
-    """Return an instance of ChromaDBService, implementing the VectorDBService interface."""
-    return ChromaDBService()
+def get_repository_repository() -> RepositoryRepository:
+    """Return an instance of ChromaDBRepositoryRepository, implementing the Repository interface."""
+    return ChromaDBRepositoryRepository()
