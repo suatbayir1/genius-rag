@@ -1,7 +1,7 @@
-from pydantic import Field
+from pydantic import Field, HttpUrl
 
 
 class RepositoryFields:
     """Base model for repository-related fields."""
 
-    repository_url: str = Field(..., description="Repository URL")
+    repository_url: HttpUrl = Field(..., description="Repository URL")

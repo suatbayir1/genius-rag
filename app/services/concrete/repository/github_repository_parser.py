@@ -2,6 +2,7 @@ import subprocess
 import tempfile
 
 from git import Repo
+from pydantic import HttpUrl
 
 from app.services.abstract.repository.repository_parser import RepositoryParser
 
@@ -9,11 +10,11 @@ from app.services.abstract.repository.repository_parser import RepositoryParser
 class GithubRepositoryParser(RepositoryParser):
     """Parse a GitHub repository into text."""
 
-    def parse(self, repository_url: str) -> str:
+    def parse(self, repository_url: HttpUrl) -> str:
         """Clone the repository and parses it into text.
 
         Args:
-            repository_url (str): The URL of the repository to parse.
+            repository_url (HttpUrl): The URL of the repository to parse.
 
         Returns:
             str: The parsed contents of the repository.

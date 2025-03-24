@@ -1,3 +1,5 @@
+from pydantic import HttpUrl
+
 from app.models.repository.models import RepositoryResponse
 from app.repositories.RepositoryRepository import RepositoryRepository
 from app.services.abstract.embedding.embedding_service import EmbeddingService
@@ -14,11 +16,11 @@ class RepositoryServiceImpl(RepositoryService):
         self.embedding_service: EmbeddingService = embedding_service
         self.repository: RepositoryRepository = repository
 
-    def process(self, repository_url: str) -> RepositoryResponse:
+    def process(self, repository_url: HttpUrl) -> RepositoryResponse:
         """Parse the given repository URL and saves the parsed data and embedding vector to the database.
 
         Args:
-            repository_url (str): The URL of the repository to process.
+            repository_url (HttpUrl): The URL of the repository to process.
 
         Returns:
             RepositoryResponse: A response containing the processed repository data.
@@ -27,6 +29,6 @@ class RepositoryServiceImpl(RepositoryService):
 
         embedding_vector = self.embedding_service.encode(parsed_repository)
 
-        self.repository.save(parsed_repository, embedding_vector, repository_url)
+        self.repository.save(parsed_repository, embedding_vector, str(repository_url))
 
         return RepositoryResponse(repository_url=repository_url)

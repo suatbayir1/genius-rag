@@ -4,3 +4,5 @@ repo-to-text==0.5.4
 chromadb==0.6.3
 sentence-transformers==3.4.1
 pre-commit==4.2.0
+pytest==8.3.5
+gitpython==3.1.44
