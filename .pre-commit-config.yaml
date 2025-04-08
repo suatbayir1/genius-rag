@@ -42,7 +42,7 @@ repos:
           - "flake8-print"
         args:
           - "--max-line-length=120"
-          - "--ignore=D100,D101,D102,D103,D104"
+          - "--ignore=D100,D101,D102,D103,D104,E203,W503"
           - "--exclude=venv,.git,.tox,.mypy_cache,.pytest_cache,__pycache__"
 
   - repo: https://github.com/pre-commit/mirrors-mypy

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from pydantic import HttpUrl
 
-from app.models.repository.models import RepositoryResponse
+from app.models.repository.models import QueryRequest, QueryResponse, RepositoryResponse
 
 
 class RepositoryService(ABC):
@@ -17,4 +17,15 @@ class RepositoryService(ABC):
 
         Returns:
             RepositoryResponse: The processed repository.
+        """
+
+    @abstractmethod
+    def query(self, request: QueryRequest) -> QueryResponse:
+        """Query the repository.
+
+        Args:
+            request (QueryRequest): The query request.
+
+        Returns:
+            QueryResponse: The query response.
         """
