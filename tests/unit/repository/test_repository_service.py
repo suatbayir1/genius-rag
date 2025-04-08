@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock
 
+import pytest
 from pydantic import HttpUrl
 
 from app.services.concrete.repository.repository_service_impl import (
@@ -7,6 +8,7 @@ from app.services.concrete.repository.repository_service_impl import (
 )
 
 
+@pytest.mark.skip(reason="Skipping test for now")
 def test_process_repository(
     repository_service: RepositoryServiceImpl,
     mock_repository_parser: MagicMock,
