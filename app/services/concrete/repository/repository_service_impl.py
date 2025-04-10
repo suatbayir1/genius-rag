@@ -49,20 +49,21 @@ class RepositoryServiceImpl(RepositoryService):
 
         parsed_files = self.parser.parse(repository_path)
 
-        for file_path, content in parsed_files:
-            language: str = self.language_detector.detect(file_path, content)
+        for file_path, file_extension in parsed_files:
+            chunker: Chunker = ChunkerFactory.get_chunker(file_extension)
+            chunks = chunker.chunk(file_path)
 
-            chunker: Chunker = ChunkerFactory.get_chunker(language)
-            chunks = chunker.chunk(content)
+            if not chunks:
+                continue
 
-            embedding_model: Embedding = EmbeddingModelFactory.get_embedding_model(language)
+            embedding_model: Embedding = EmbeddingModelFactory.get_embedding_model(file_extension)
             embeddings: List[float] = embedding_model.encode(chunks)
 
-            doc_ids: List[uuid.UUID] = [uuid.uuid4() for _ in range(len(embeddings))]
-            metadatas: List[dict[str, Any]] = [{"chunk": chunk, "file_path": file_path} for chunk in chunks]
+            doc_ids: List[str] = [str(uuid.uuid4()) for _ in range(len(embeddings))]
+            metadatas: List[dict[str, Any]] = [{"text": chunk, "file_path": file_path} for chunk in chunks]
 
             collection_name: str = embedding_model.__class__.__name__
-            self.repository.save(collection_name, doc_ids, embeddings, metadatas)
+            self.repository.save(collection_name, doc_ids, chunks, embeddings, metadatas)
 
         return RepositoryResponse(repository_url=repository_url)
 
@@ -75,10 +76,10 @@ class RepositoryServiceImpl(RepositoryService):
         Returns:
             QueryResponse: List of the most relevant stored documents.
         """
-        if self.language_detector.is_code(request.query):
-            language = "python"
-        else:
-            language = "text"
+        # if self.language_detector.is_code(request.query):
+        #     language = "python"
+        # else:
+        language = "text"
 
         embedding_model: Embedding = EmbeddingModelFactory.get_embedding_model(language)
         query_embeddings: List[float] = embedding_model.encode([request.query])

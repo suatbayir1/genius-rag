@@ -1,6 +1,8 @@
 import os
+from pathlib import Path
 from typing import Generator
 
+from app.constants import SUPPORTED_EXTENSIONS
 from app.services.abstract.repository.repository_parser import RepositoryParser
 
 
@@ -23,9 +25,9 @@ class RepositoryParserImpl(RepositoryParser):
             for file in files:
                 file_path: str = os.path.join(root, file)
 
-                try:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        content: str = f.read()
-                        yield (file_path, content)
-                except UnicodeDecodeError:
+                file_extension: str = Path(file_path).suffix
+
+                if file_extension not in SUPPORTED_EXTENSIONS:
                     continue
+
+                yield (file_path, file_extension)
