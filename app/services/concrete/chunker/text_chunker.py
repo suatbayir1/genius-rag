@@ -2,6 +2,9 @@ from app.services.abstract.chunking.chunker import Chunker
 
 
 class TextChunker(Chunker):
-    def chunk(self, text: str) -> list[str]:
-        """Split the text into chunks of specified size."""
-        return text.split("\n\n")
+    def chunk(self, file_path: str) -> list[str]:
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return f.read().split("\n")
+        except UnicodeDecodeError:
+            return []

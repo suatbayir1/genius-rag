@@ -6,11 +6,11 @@ class Chunker(ABC):
     """Abstract base class for a chunker."""
 
     @abstractmethod
-    def chunk(self, text: str) -> List[str]:
+    def chunk(self, file_path: str) -> List[str]:
         """Chunk text into smaller parts.
 
         Args:
-            text (str): The text to chunk.
+            file_path (str): The path of the file to chunk.
 
         Returns:
             List[str]: The chunked text.
