@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import HttpUrl
 
+from app.exceptions.unsupported_task_exception import UnsupportedTaskError
 from app.factories.chunker_factory import ChunkerFactory
 from app.factories.embedding_model_factory import EmbeddingModelFactory
 from app.factories.task_handler_factory import TaskHandlerFactory
@@ -87,7 +88,7 @@ class RepositoryServiceImpl(RepositoryService):
         task_type: Optional[LLMTaskType] = LLMTaskType.from_llm_output(llm_response)
 
         if not task_type:
-            raise ValueError("Task type could not be determined.")
+            raise UnsupportedTaskError(str(task_type))
 
         embedding_model: Embedding = EmbeddingModelFactory.get_embedding(task_type.embedding_model_class)
         query_embeddings: List[float] = embedding_model.encode([request.query])
