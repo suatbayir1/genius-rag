@@ -4,7 +4,7 @@ from app.dependencies.database_dependencies import get_repository_repository
 from app.dependencies.llm_dependencies import get_llm_service
 from app.repositories.RepositoryRepository import RepositoryRepository
 from app.services.abstract.language_detector import LanguageDetector
-from app.services.abstract.llm.LLMService import LLMService
+from app.services.abstract.llm.llm_service import LLMService
 from app.services.abstract.repository.repository_cloner import RepositoryCloner
 from app.services.abstract.repository.repository_parser import RepositoryParser
 from app.services.abstract.repository.repository_service import RepositoryService

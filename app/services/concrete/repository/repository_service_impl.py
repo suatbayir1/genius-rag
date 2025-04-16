@@ -1,16 +1,19 @@
 import uuid
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from pydantic import HttpUrl
 
 from app.factories.chunker_factory import ChunkerFactory
 from app.factories.embedding_model_factory import EmbeddingModelFactory
+from app.factories.task_handler_factory import TaskHandlerFactory
+from app.models.llm.enums import LLMTaskType
 from app.models.repository.models import QueryRequest, QueryResponse, RepositoryResponse
 from app.repositories.RepositoryRepository import RepositoryRepository
 from app.services.abstract.chunking.chunker import Chunker
 from app.services.abstract.embedding.embedding import Embedding
 from app.services.abstract.language_detector import LanguageDetector
-from app.services.abstract.llm.LLMService import LLMService
+from app.services.abstract.llm.llm_service import LLMService
+from app.services.abstract.llm.task_handler import TaskHandler
 from app.services.abstract.repository.repository_cloner import RepositoryCloner
 from app.services.abstract.repository.repository_parser import RepositoryParser
 from app.services.abstract.repository.repository_service import RepositoryService
@@ -35,6 +38,7 @@ class RepositoryServiceImpl(RepositoryService):
         self.language_detector: LanguageDetector = language_detector
         self.repository: RepositoryRepository = repository
         self.llm_service: LLMService = llm_service
+        self.task_handler_factory: TaskHandlerFactory = TaskHandlerFactory(llm_service)
 
     def process(self, repository_url: HttpUrl) -> RepositoryResponse:
         """Parse the given repository URL and saves the parsed data and embedding vector to the database.
@@ -76,12 +80,16 @@ class RepositoryServiceImpl(RepositoryService):
         Returns:
             QueryResponse: List of the most relevant stored documents.
         """
-        # if self.language_detector.is_code(request.query):
-        #     language = "python"
-        # else:
-        language = "text"
+        query_type_handler: TaskHandler = self.task_handler_factory.get_handler(LLMTaskType.DETECT_QUERY_TYPE)
+        llm_response: str = query_type_handler.handle(
+            context=LLMTaskType.to_prompt_list(exclude={LLMTaskType.DETECT_QUERY_TYPE}), query=request.query
+        )
+        task_type: Optional[LLMTaskType] = LLMTaskType.from_llm_output(llm_response)
 
-        embedding_model: Embedding = EmbeddingModelFactory.get_embedding_model(language)
+        if not task_type:
+            raise ValueError("Task type could not be determined.")
+
+        embedding_model: Embedding = EmbeddingModelFactory.get_embedding(task_type.embedding_model_class)
         query_embeddings: List[float] = embedding_model.encode([request.query])
         collection_name: str = embedding_model.__class__.__name__
 
@@ -91,6 +99,7 @@ class RepositoryServiceImpl(RepositoryService):
             top_k=request.top_k,
         )
 
-        answer: str = self.llm_service.answer(context=results["metadatas"], question=request.query)
+        handler: TaskHandler = self.task_handler_factory.get_handler(task_type)
+        answer: str = handler.handle(context=results["metadatas"], query=request.query)
 
         return QueryResponse(documents={"answer": answer})
