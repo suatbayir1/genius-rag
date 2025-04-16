@@ -1,3 +1,4 @@
+from app.exceptions.unsupported_task_exception import UnsupportedTaskError
 from app.models.llm.enums import LLMTaskType
 from app.services.abstract.llm.llm_service import LLMService
 from app.services.abstract.llm.task_handler import TaskHandler
@@ -22,5 +23,5 @@ class TaskHandlerFactory:
     def get_handler(self, task_type: LLMTaskType) -> TaskHandler:
         """Get the appropriate task handler based on the task type."""
         if task_type not in self.handlers:
-            raise ValueError(f"Unsupported task type: {task_type}")
+            raise UnsupportedTaskError(task_type)
         return self.handlers[task_type]
