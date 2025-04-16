@@ -10,3 +10,7 @@ class EmbeddingModelFactory:
         if Language.is_valid(language):
             return CodeEmbedding()
         return TextEmbedding()
+
+    @staticmethod
+    def get_embedding(cls: type[Embedding]) -> Embedding:
+        return cls()
