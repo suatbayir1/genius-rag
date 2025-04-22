@@ -9,7 +9,7 @@ test_router: APIRouter = APIRouter(prefix="/test", tags=["test"])
 @test_router.get("/parse-pdf")
 def test() -> str:
     chunker = DoclingChunker()
-    chunks = chunker.chunk("/Users/suatbayir/GENIUS/genius-rag/assets/Task-Planning.pdf")
+    chunks = chunker.chunk("/app/assets/Task-Planning.pdf")
 
     embedding_model = TextEmbedding()
     embedding_model.encode(chunks)
