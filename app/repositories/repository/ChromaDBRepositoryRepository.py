@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-import chromadb
+from chromadb import Collection, HttpClient
 
 from app.config import settings
 from app.repositories.RepositoryRepository import RepositoryRepository
@@ -11,9 +11,9 @@ class ChromaDBRepositoryRepository(RepositoryRepository):
 
     def __init__(self):
         """Initialize the ChromaDB client and collection."""
-        self.client = chromadb.PersistentClient(path=settings.VECTOR_DB_PATH)
+        self.client = HttpClient(host=settings.CHROMA_HOST, port=settings.CHROMA_PORT)
 
-    def _get_collection(self, collection_name: str) -> chromadb.Collection:
+    def _get_collection(self, collection_name: str) -> Collection:
         return self.client.get_or_create_collection(collection_name)
 
     def save(

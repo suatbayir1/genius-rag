@@ -16,3 +16,5 @@ langchain-ollama
 langchain-chroma
 pandas
 docling
+watchdog
+debugpy
