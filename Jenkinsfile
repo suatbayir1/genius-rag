@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.12-slim'
+            args '-u root'
+        }
+    }
 
     environment {
         DOCKER_REGISTRY = 'suatbayir'
@@ -18,14 +23,20 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh 'pip install --upgrade pip'
+                sh 'pip install pre-commit'
+            }
+        }
+
         stage('Pre-commit Checks') {
             steps {
-                sh 'pip install pre-commit'
                 sh 'pre-commit run --all-files'
             }
         }
 
-        stage("build") {
+        stage("Build") {
             steps {
                 echo "building the application..."
             }
