@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.12'
-            args '-u root'
-        }
-    }
+    agent any
 
     environment {
         DOCKER_REGISTRY = 'suatbayir'
@@ -25,8 +20,11 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install --upgrade pip'
-                sh 'pip install pre-commit'
+                sh '''
+                    apt-get update && apt-get install -y python3-pip git
+                    pip3 install --upgrade pip
+                    pip3 install pre-commit
+                '''
             }
         }
 
