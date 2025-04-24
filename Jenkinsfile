@@ -18,16 +18,6 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                    apt-get update && apt-get install -y python3-pip git
-                    pip3 install --upgrade pip
-                    pip3 install pre-commit
-                '''
-            }
-        }
-
         stage('Pre-commit Checks') {
             steps {
                 sh 'pre-commit run --all-files'
