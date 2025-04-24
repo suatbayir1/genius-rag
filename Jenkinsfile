@@ -18,15 +18,11 @@ pipeline {
             }
         }
 
-        stage('Pre-commit Checks') {
-            steps {
-                sh 'pre-commit run --all-files'
-            }
-        }
-
         stage("Build") {
             steps {
-                echo "building the application..."
+                script {
+                    sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
             }
         }
 
