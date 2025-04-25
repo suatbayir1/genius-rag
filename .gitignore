@@ -42,10 +42,6 @@ Thumbs.db
 *.pyo
 *.pyd
 
-# Docker
-Dockerfile
-*.dockerignore
-
 # Coverage reports
 htmlcov/
 .coverage

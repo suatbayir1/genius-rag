@@ -18,23 +18,18 @@ pipeline {
             }
         }
 
-        stage("Build") {
+        stage('Docker build test') {
+            steps {
+                sh 'docker version'
+                sh 'docker run hello-world'
+            }
+        }
+
+        stage('Build') {
             steps {
                 script {
                     sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
-            }
-        }
-
-        stage("test") {
-            steps {
-                echo "testing the application..."
-            }
-        }
-
-        stage("deploy") {
-            steps {
-                echo "deploying the application"
             }
         }
     }
