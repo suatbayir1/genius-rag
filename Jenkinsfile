@@ -18,10 +18,34 @@ pipeline {
             }
         }
 
+        stage('Pre-commit Check') {
+            steps {
+                script {
+                    sh """
+                        docker run --rm -v "\$(pwd):/app" -w /app python:3.12 bash -c '
+                            apt-get update && apt-get install -y git &&
+                            git config --global --add safe.directory /app &&
+                            git config --unset-all core.hooksPath &&
+                            pip install pre-commit &&
+                            pre-commit install &&
+                            pre-commit run --all-files
+                        '
+                    """
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
                     sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
                     sh "docker run --rm --env-file .env ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} pytest tests"
                 }
             }
