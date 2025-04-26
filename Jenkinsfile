@@ -15,6 +15,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                sh "cp .env.example .env"
             }
         }
 
@@ -38,7 +39,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                    sh "docker build --no-cache -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
