@@ -18,17 +18,21 @@ pipeline {
             }
         }
 
-        stage('Docker build test') {
-            steps {
-                sh 'docker version'
-                sh 'docker run hello-world'
-            }
-        }
-
         stage('Build') {
             steps {
                 script {
                     sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
+            }
+        }
+
+        stage('Push to Dockerhub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        sh "docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+                    }
                 }
             }
         }
