@@ -22,6 +22,7 @@ pipeline {
             steps {
                 script {
                     sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                    sh "docker run --rm --env-file .env ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} pytest tests"
                 }
             }
         }

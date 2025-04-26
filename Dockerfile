@@ -22,6 +22,7 @@ FROM base AS dev
 RUN pip install debugpy
 
 COPY . .
+COPY .env.example .env
 
 CMD ["python", "-Xfrozen_modules=off", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
@@ -29,5 +30,6 @@ CMD ["python", "-Xfrozen_modules=off", "-m", "debugpy", "--listen", "0.0.0.0:567
 FROM base AS prod
 
 COPY . .
+COPY .env.example .env
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
