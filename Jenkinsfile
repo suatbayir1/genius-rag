@@ -74,20 +74,6 @@ pipeline {
                         docker compose pull
                         docker compose up --build -d
                     """
-
-                    // İleride remote server deploy yapmak istersen, şu kodu aktif edeceğiz:
-                    /*
-                    sshagent (credentials: ["${SSH_CREDENTIALS_ID}"]) {
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
-                                cd ${REMOTE_PATH} &&
-                                docker-compose down &&
-                                docker-compose pull &&
-                                docker-compose up --build -d
-                            '
-                        """
-                    }
-                    */
                 }
             }
         }
