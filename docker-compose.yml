@@ -31,9 +31,11 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+       - ./entrypoint-ollama.sh:/entrypoint.sh
     environment:
       - OLLAMA_HOST=0.0.0.0
     restart: unless-stopped
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]
 
 volumes:
   chroma_data:

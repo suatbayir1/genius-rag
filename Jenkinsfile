@@ -22,19 +22,21 @@ pipeline {
         stage('Pre-commit Check') {
             steps {
                 script {
-                    sh """
-                        docker run --rm -v "\$(pwd):/app" -w /app python:3.12 bash -c '
-                            apt-get update && apt-get install -y git &&
-                            git config --global --add safe.directory /app &&
-                            git config --unset-all core.hooksPath &&
-                            pip install pre-commit &&
-                            pre-commit install &&
-                            pre-commit run --all-files
-                        '
-                    """
+                    sh '''
+                        apt-get update && apt-get install -y git python3-pip python3-venv &&
+                        python3 -m venv venv &&
+                        . venv/bin/activate &&
+                        git config --global --add safe.directory /app &&
+                        git config --unset-all core.hooksPath &&
+                        pip install --upgrade pip &&
+                        pip install pre-commit &&
+                        venv/bin/pre-commit install &&
+                        venv/bin/pre-commit run --all-files
+                    '''
                 }
             }
         }
+
 
         stage('Build') {
             steps {
@@ -59,6 +61,33 @@ pipeline {
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                         sh "docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
                     }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    echo "Deploying application..."
+                    sh """
+                        docker compose down
+                        docker compose pull
+                        docker compose up --build -d
+                    """
+
+                    // İleride remote server deploy yapmak istersen, şu kodu aktif edeceğiz:
+                    /*
+                    sshagent (credentials: ["${SSH_CREDENTIALS_ID}"]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
+                                cd ${REMOTE_PATH} &&
+                                docker-compose down &&
+                                docker-compose pull &&
+                                docker-compose up --build -d
+                            '
+                        """
+                    }
+                    */
                 }
             }
         }
