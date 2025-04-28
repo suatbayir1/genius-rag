@@ -16,7 +16,7 @@ services:
 
   chroma:
     container_name: chroma
-    image: chromadb/chroma
+    image: chromadb/chroma:0.6.3
     ports:
       - "8001:8000"
     volumes:
