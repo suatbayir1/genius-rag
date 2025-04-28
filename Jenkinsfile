@@ -5,10 +5,6 @@ pipeline {
         DOCKER_REGISTRY = 'suatbayir'
         IMAGE_NAME = 'backend'
         IMAGE_TAG = 'latest'
-        SSH_CREDENTIALS_ID = 'remote-server-ssh-id'
-        REMOTE_HOST = 'your.remote.server.ip'
-        REMOTE_USER = 'remoteuser'
-        REMOTE_PATH = 'path'
     }
 
     stages {
