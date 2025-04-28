@@ -31,10 +31,12 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+      - ./check_and_pull_ollama_model.sh:/app/check_and_pull_ollama_model.sh
     environment:
       - OLLAMA_HOST=0.0.0.0
     restart: unless-stopped
-    entrypoint: ["/bin/ -c", "/app/check_and_pull_ollama_model.sh && /entrypoint.sh"]
+    entrypoint: /bin/bash /app/check_and_pull_ollama_model.sh
+    command: ["./entrypoint.sh"]
 
 volumes:
   chroma_data:
