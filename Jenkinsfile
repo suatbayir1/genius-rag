@@ -55,6 +55,10 @@ pipeline {
         }
 
         stage('Push to Dockerhub') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
@@ -66,6 +70,10 @@ pipeline {
         }
 
         stage('Deploy') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 script {
                     echo "Deploying application..."
