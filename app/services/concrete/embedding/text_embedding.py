@@ -16,11 +16,11 @@ class TextEmbedding(Embedding):
         self.tokenizer = AutoTokenizer.from_pretrained(self.MODEL)
         self.model = AutoModel.from_pretrained(self.MODEL)
 
-    def encode(self, chunks: List[str]) -> List[float]:
+    def encode(self, chunks: List[str]) -> List[List[float]]:
         inputs = self.tokenizer(chunks, padding=True, truncation=True, return_tensors="pt")
 
         with torch.no_grad():
             outputs = self.model(**inputs)
             embeddings = outputs.last_hidden_state.mean(dim=1)
 
-        return embeddings.tolist()
+        return embeddings.cpu().numpy().tolist()

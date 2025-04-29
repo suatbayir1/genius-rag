@@ -16,13 +16,12 @@ class CodeEmbedding(Embedding):
         self.tokenizer = AutoTokenizer.from_pretrained(self.CODE_EMBEDDING_MODEL, trust_remote_code=True)
         self.model = AutoModel.from_pretrained(self.CODE_EMBEDDING_MODEL, trust_remote_code=True).to(self.DEVICE)
 
-    def encode(self, chunks: List[str]) -> List[float]:
-        embeddings: List[float] = []
-        for chunk in chunks:
-            inputs = self.tokenizer.encode(chunk, return_tensors="pt").to(self.DEVICE)
+    def encode(self, chunks: List[str]) -> List[List[float]]:
+        inputs = self.tokenizer(chunks, return_tensors="pt", truncation=True, max_length=512, padding="max_length").to(
+            self.DEVICE
+        )
 
-            with torch.no_grad():
-                embedding = self.model(inputs)[0]
-            embeddings.append(embedding.cpu().numpy().tolist())
+        with torch.no_grad():
+            outputs = self.model(**inputs)
 
-        return embeddings
+        return outputs.cpu().numpy().tolist()
