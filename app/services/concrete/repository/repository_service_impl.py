@@ -62,7 +62,7 @@ class RepositoryServiceImpl(RepositoryService):
                 continue
 
             embedding_model: Embedding = EmbeddingModelFactory.get_embedding_model(file_extension)
-            embeddings: List[float] = embedding_model.encode(chunks)
+            embeddings: List[List[float]] = embedding_model.encode(chunks)
 
             doc_ids: List[str] = [str(uuid.uuid4()) for _ in range(len(embeddings))]
             metadatas: List[dict[str, Any]] = [{"text": chunk, "file_path": file_path} for chunk in chunks]
@@ -91,7 +91,7 @@ class RepositoryServiceImpl(RepositoryService):
             raise UnsupportedTaskError(str(task_type))
 
         embedding_model: Embedding = EmbeddingModelFactory.get_embedding(task_type.embedding_model_class)
-        query_embeddings: List[float] = embedding_model.encode([request.query])
+        query_embeddings: List[List[float]] = embedding_model.encode([request.query])
         collection_name: str = embedding_model.__class__.__name__
 
         results: Dict[str, Any] = self.repository.query(

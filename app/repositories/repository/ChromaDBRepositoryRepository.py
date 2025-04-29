@@ -21,7 +21,7 @@ class ChromaDBRepositoryRepository(RepositoryRepository):
         collection_name: str,
         ids: List[str],
         chunks: List[str],
-        embeddings: List[float],
+        embeddings: List[List[float]],
         metadatas: List[dict[str, Any]],
     ) -> None:
         """Save the document and its embedding vector to the collection.
@@ -34,7 +34,7 @@ class ChromaDBRepositoryRepository(RepositoryRepository):
         collection = self._get_collection(collection_name)
         collection.add(ids=ids, documents=chunks, embeddings=embeddings, metadatas=metadatas)
 
-    def query(self, collection_name: str, query_embeddings: List[float], top_k: int) -> Dict[str, Any]:
+    def query(self, collection_name: str, query_embeddings: List[List[float]], top_k: int) -> Dict[str, Any]:
         """Query the vector database.
 
         Args:
