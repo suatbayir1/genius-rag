@@ -13,7 +13,7 @@ class SentenceTransformerEmbedding(Embedding):
         """Initialize the SentenceTransformer model."""
         self.model = SentenceTransformer(settings.EMBEDDING_MODEL_NAME)
 
-    def encode(self, chunks: List[str]) -> List[float]:
+    def encode(self, chunks: List[str]) -> List[List[float]]:
         """Encode the input chunks into an embedding vector.
 
         Args:
