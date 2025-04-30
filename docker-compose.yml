@@ -6,6 +6,9 @@ services:
     container_name: backend
     ports:
       - "8000:8000"
+    volumes:
+      - /opt/hf_models:/models/hf_models
+      - /opt/.cache/docling/models:/models/docling_models
     env_file:
       - .env
     environment:
