@@ -13,5 +13,10 @@ class Settings(BaseSettings):
 
     OLLAMA_BASE_URL: str = Field(description="Ollama base url")
 
+    HF_MODEL_DIRECTORY: str = Field(description="Model directory")
+    DOCLING_MODEL_DIRECTORY: str = Field(description="Docling model directory")
+    CODE_EMBEDDING_MODEL: str = Field(description="Embedding model name for code")
+    TEXT_EMBEDDING_MODEL: str = Field(description="Embedding model name for text")
+
 
 settings = Settings()
