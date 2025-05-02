@@ -5,7 +5,7 @@
 
 Genius-RAG is a Retrieval-Augmented Generation (RAG) system that allows users to query and extract insights from codebase/repository using LLMs (Large Language Models)
 
-###  Features
+## 🚀 Features
 
 -  Testing & Coverage
 
@@ -15,7 +15,7 @@ Genius-RAG is a Retrieval-Augmented Generation (RAG) system that allows users to
 
 -  Pre-Commit Code Linting & Formatting
 
-##  Getting Started
+## 🛠️ Getting Started
 
 ```shell script
 # Clone the repository
