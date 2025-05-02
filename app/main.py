@@ -12,4 +12,4 @@ app.add_exception_handler(AppException, app_exception_handler)
 @app.get("/")
 async def root():
     """Server health check endpoint."""
-    return {"message": "Server is running on port 8000"}
+    return {"message": "Server is running..."}
