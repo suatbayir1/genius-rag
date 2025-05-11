@@ -13,7 +13,7 @@ class CodeEmbedding(Embedding):
 
     def __init__(self):
         """Initialize the CodeEmbedding model."""
-        model_path: str = os.path.join(settings.HF_MODEL_DIRECTORY, settings.CODE_EMBEDDING_MODEL)
+        model_path = os.path.join(settings.HF_MODEL_DIRECTORY, settings.CODE_EMBEDDING_MODEL)
         self.tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True, local_files_only=True)
         self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True, local_files_only=True).to(
             self.DEVICE

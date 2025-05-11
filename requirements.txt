@@ -14,7 +14,10 @@ transformers==4.50.3
 langchain
 langchain-ollama
 langchain-chroma
+langchain-community
 pandas
 docling
 watchdog
 debugpy
+pypdf
+python-multipart

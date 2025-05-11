@@ -4,22 +4,14 @@ from app.models.llm.enums import LLMTaskType
 class PromptBuilder:
     PROMPT_TEMPLATES: dict[str, str] = {
         LLMTaskType.QA: """
-            You are a helpful and knowledgeable software engineer assistant.
+            Answer the question based only on the following context:
 
-            You will be provided with:
-            - Relevant code snippets from a codebase.
-            - Supporting documentation from technical PDFs or READMEs.
-
-            Use this information to answer the user's question as accurately as possible.
-
-            Always provide clear, concise, and developer-friendly responses. If relevant, include code examples.
+            Context:
+            {context}
 
             ---
 
-            Relevant Code Snippets:
-            {context}
-
-            User Question:
+            Answer the question based on the above context:
             {query}
 
             Answer:
