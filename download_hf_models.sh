@@ -5,6 +5,7 @@ MODEL_IDS=(
   "Salesforce/codet5p-110m-embedding"
   "ds4sd/SmolDocling-256M-preview"
   "sentence-transformers/all-MiniLM-L6-v2"
+  "HuggingFaceTB/SmolVLM-256M-Instruct"
 )
 
 # Base directory
