@@ -1,4 +1,3 @@
-import os
 import shutil
 from pathlib import Path
 from typing import Any, Dict, List
@@ -6,6 +5,7 @@ from typing import Any, Dict, List
 from fastapi import UploadFile
 from langchain.schema.document import Document
 
+from app.config import settings
 from app.factories.chunker_factory import ChunkerFactory
 from app.factories.embedding_model_factory import EmbeddingModelFactory
 from app.factories.task_handler_factory import TaskHandlerFactory
@@ -47,15 +47,18 @@ class DocumentServiceImpl(DocumentService):
         Returns:
             str: File path
         """
-        upload_dir = Path("uploads")
+        upload_dir = Path(settings.UPLOAD_DIR)
         upload_dir.mkdir(exist_ok=True)
 
         file_path = upload_dir / file.filename
 
+        if file_path.exists():
+            raise FileExistsError(f"File '{file.filename}' already exists.")
+
         with open(file_path, "wb") as f:
             shutil.copyfileobj(file.file, f)
 
-        return str(file_path)
+        return str(file.filename)
 
     async def upload(self, file: UploadFile, collection_name: str) -> DocumentUploadResponse:
         """Save file to vectordb.
@@ -69,35 +72,31 @@ class DocumentServiceImpl(DocumentService):
         """
         file_path: str = await self.save(file)
 
-        try:
-            extension: str = Path(file_path).suffix
-            chunks: list[Document] = ChunkerFactory.get_chunker(extension).chunk(file_path)
+        extension: str = Path(file_path).suffix
+        chunks: list[Document] = ChunkerFactory.get_chunker(extension).chunk(file_path)
 
-            # Get existing ids
-            existing_ids: set = self.repository.get_existing_ids(collection_name)
+        # Get existing ids
+        existing_ids: set = self.repository.get_existing_ids(collection_name)
 
-            # Only add documents that don't exist in the DB.
-            new_chunks: List[Document] = []
-            for chunk in chunks:
-                if chunk.metadata["id"] not in existing_ids:
-                    new_chunks.append(chunk)
+        # Only add documents that don't exist in the DB.
+        new_chunks: List[Document] = []
+        for chunk in chunks:
+            if chunk.metadata["id"] not in existing_ids:
+                new_chunks.append(chunk)
 
-            if not new_chunks:
-                logger.info("No new chunks to add..")
-                return DocumentUploadResponse(message=ResponseMessage.FILE_ALREADY_UPLOADED)
+        if not new_chunks:
+            logger.info("No new chunks to add..")
+            return DocumentUploadResponse(message=ResponseMessage.FILE_ALREADY_UPLOADED)
 
-            new_chunk_ids: list[str] = [chunk.metadata["id"] for chunk in new_chunks]
-            documents_text: list[str] = [chunk.page_content for chunk in new_chunks]
-            metadatas: list[dict[str, Any]] = [chunk.metadata for chunk in new_chunks]
+        new_chunk_ids: list[str] = [chunk.metadata["id"] for chunk in new_chunks]
+        documents_text: list[str] = [chunk.page_content for chunk in new_chunks]
+        metadatas: list[dict[str, Any]] = [chunk.metadata for chunk in new_chunks]
 
-            embedding_model: Embedding = EmbeddingModelFactory.get_embedding(OllamaEmbedding)
-            embeddings: List[List[float]] = embedding_model.encode(documents_text)
+        embedding_model: Embedding = EmbeddingModelFactory.get_embedding(OllamaEmbedding)
+        embeddings: List[List[float]] = embedding_model.encode(documents_text)
 
-            self.repository.save(collection_name, new_chunk_ids, documents_text, embeddings, metadatas)
-            return DocumentUploadResponse(message=ResponseMessage.FILE_UPLOAD_SUCCESS)
-        finally:
-            if os.path.exists(file_path):
-                os.remove(file_path)
+        self.repository.save(collection_name, new_chunk_ids, documents_text, embeddings, metadatas)
+        return DocumentUploadResponse(message=ResponseMessage.FILE_UPLOAD_SUCCESS)
 
     async def query(self, request: DocumentQueryRequest) -> DocumentQueryResponse:
         """Query to llm using vectordb.

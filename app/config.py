@@ -7,6 +7,7 @@ class Settings(BaseSettings):
 
     EMBEDDING_MODEL_NAME: str = Field(description="Embedding model name")
     USE_GPU: bool = Field(description="Use GPU for processing")
+    UPLOAD_DIR: str = Field(description="Upload directory path")
 
     CHROMA_HOST: str = Field(description="ChromaDB host")
     CHROMA_PORT: int = Field(default=8000, description="ChromaDB port")
