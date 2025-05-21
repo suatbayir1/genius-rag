@@ -54,3 +54,4 @@ coverage.xml
 # FastAPI static/media files
 staticfiles/
 media/
+uploads/

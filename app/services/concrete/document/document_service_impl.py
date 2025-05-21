@@ -58,7 +58,7 @@ class DocumentServiceImpl(DocumentService):
         with open(file_path, "wb") as f:
             shutil.copyfileobj(file.file, f)
 
-        return str(file.filename)
+        return str(file_path)
 
     async def upload(self, file: UploadFile, collection_name: str) -> DocumentUploadResponse:
         """Save file to vectordb.
