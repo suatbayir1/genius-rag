@@ -1,4 +1,7 @@
 services:
+  backend:
+    volumes:
+      - /home/suat/uploads:/app/uploads
   ollama:
     runtime: nvidia
     deploy:
