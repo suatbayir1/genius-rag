@@ -1,13 +1,4 @@
 services:
-  backend:
-    runtime: nvidia
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
   ollama:
     runtime: nvidia
     deploy:
