@@ -76,7 +76,7 @@ pipeline {
                     sh """
                         docker compose down
                         docker compose pull
-                        docker compose up --build -d
+                        docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
                     """
                 }
             }
