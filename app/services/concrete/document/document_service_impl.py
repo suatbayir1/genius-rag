@@ -6,10 +6,12 @@ from fastapi import UploadFile
 from langchain.schema.document import Document
 
 from app.config import settings
+from app.domain.filtering.sequential_dropoff import SequentialDropOffFilter
 from app.factories.chunker_factory import ChunkerFactory
 from app.factories.embedding_model_factory import EmbeddingModelFactory
 from app.factories.task_handler_factory import TaskHandlerFactory
 from app.models.document.models import (
+    DocumentChunk,
     DocumentQueryRequest,
     DocumentQueryResponse,
     DocumentUploadResponse,
@@ -118,9 +120,15 @@ class DocumentServiceImpl(DocumentService):
 
         documents = results.get("documents", [[]])[0]
         metadatas = results.get("metadatas", [[]])[0]
+        distances = results.get("distances", [[]])[0]
 
-        context_text = "\n\n---\n\n".join(documents)
-        sources = [meta.get("id") for meta in metadatas]
+        filter_strategy = SequentialDropOffFilter()
+        filtered_docs, filtered_meta = filter_strategy.filter(documents, metadatas, distances)
+
+        context_text = "\n\n---\n\n".join(filtered_docs)
+        sources: List[DocumentChunk] = []
+        for doc, meta in zip(filtered_docs, filtered_meta):
+            sources.append(DocumentChunk(id=meta.get("id"), text=doc))
 
         handler: TaskHandler = TaskHandlerFactory(self.llm_service).get_handler(LLMTaskType.QA)
         answer: str = handler.handle(context=context_text, query=request.query)

@@ -15,8 +15,15 @@ class DocumentQueryRequest(BaseModel):
     collection: str = Field(..., description="Collection name to be querying.")
 
 
+class DocumentChunk(BaseModel):
+    """Response model for document chunk."""
+
+    id: str = Field(..., description="Id of related chunk")
+    text: str = Field(..., description="Text of related chunk")
+
+
 class DocumentQueryResponse(BaseModel):
     """Response model for querying."""
 
     response: str = Field(..., description="Response of user query from llm")
-    sources: list[str] = Field(..., description="Most relevant ids of chunks fro user query from vectordb")
+    sources: list[DocumentChunk] = Field(..., description="Most relevant sources for user query from vectordb")
