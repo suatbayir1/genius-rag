@@ -15,8 +15,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from app.config import settings
 from app.services.abstract.chunking.chunker import Chunker
 
-CHUNK_SIZE: int = 800
-CHUNK_OVERLAP: int = 80
+CHUNK_SIZE: int = 500
+CHUNK_OVERLAP: int = 100
 IMAGE_PLACEHOLDER = "<!-- image_placeholder -->"
 PAGE_BREAK_PLACEHOLDER = "<!-- page_break_ -->"
 
