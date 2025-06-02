@@ -20,6 +20,7 @@ class DocumentChunk(BaseModel):
 
     id: str = Field(..., description="Id of related chunk")
     text: str = Field(..., description="Text of related chunk")
+    score: int = Field(..., description="Similarity percentege as int")
 
 
 class DocumentQueryResponse(BaseModel):

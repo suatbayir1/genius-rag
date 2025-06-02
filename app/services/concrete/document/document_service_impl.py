@@ -123,12 +123,12 @@ class DocumentServiceImpl(DocumentService):
         distances = results.get("distances", [[]])[0]
 
         filter_strategy = SequentialDropOffFilter()
-        filtered_docs, filtered_meta = filter_strategy.filter(documents, metadatas, distances)
+        filtered_docs, filtered_meta, filtered_scores = filter_strategy.filter(documents, metadatas, distances)
 
         context_text = "\n\n---\n\n".join(filtered_docs)
         sources: List[DocumentChunk] = []
-        for doc, meta in zip(filtered_docs, filtered_meta):
-            sources.append(DocumentChunk(id=meta.get("id"), text=doc))
+        for doc, meta, score in zip(filtered_docs, filtered_meta, filtered_scores):
+            sources.append(DocumentChunk(id=meta.get("id"), text=doc, score=score))
 
         handler: TaskHandler = TaskHandlerFactory(self.llm_service).get_handler(LLMTaskType.QA)
         answer: str = handler.handle(context=context_text, query=request.query)

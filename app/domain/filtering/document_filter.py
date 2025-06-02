@@ -11,5 +11,5 @@ class DocumentFilter(ABC):
         documents: List[str],
         metadatas: List[Dict[str, Any]],
         distances: List[float],
-    ) -> Tuple[List[str], List[Dict[str, Any]]]:
+    ) -> Tuple[List[str], List[Dict[str, Any]], List[int]]:
         pass

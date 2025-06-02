@@ -14,7 +14,7 @@ class ChromaDBRepositoryRepository(RepositoryRepository):
         self.client = HttpClient(host=settings.CHROMA_HOST, port=settings.CHROMA_PORT)
 
     def _get_collection(self, collection_name: str) -> Collection:
-        return self.client.get_or_create_collection(collection_name)
+        return self.client.get_or_create_collection(name=collection_name, metadata={"hnsw:space": "cosine"})
 
     def save(
         self,

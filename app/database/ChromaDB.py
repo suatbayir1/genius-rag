@@ -19,7 +19,7 @@ class ChromaDB:
         Returns:
             Collection: Collection of ChromaDB
         """
-        return self.client.get_or_create_collection(collection_name)
+        return self.client.get_or_create_collection(name=collection_name, metadata={"hnsw:space": "cosine"})
 
     def save(
         self,
