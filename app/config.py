@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     DOCLING_MODEL_DIRECTORY: str = Field(description="Docling model directory")
     CODE_EMBEDDING_MODEL: str = Field(description="Embedding model name for code")
     TEXT_EMBEDDING_MODEL: str = Field(description="Embedding model name for text")
+    TEXT_CLASSIFICATION_MODEL: str = Field(description="Text classification model")
 
 
 settings = Settings()

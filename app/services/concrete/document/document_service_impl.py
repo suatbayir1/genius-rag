@@ -22,6 +22,7 @@ from app.services.abstract.document.document_service import DocumentService
 from app.services.abstract.embedding.embedding import Embedding
 from app.services.abstract.llm.llm_service import LLMService
 from app.services.abstract.llm.task_handler import TaskHandler
+from app.services.abstract.security.GuardService import GuardService
 from app.services.concrete.embedding.ollama_embedding import OllamaEmbedding
 from app.utils.logger import get_logger
 from app.utils.responses import ResponseMessage
@@ -30,15 +31,17 @@ logger = get_logger(__name__)
 
 
 class DocumentServiceImpl(DocumentService):
-    def __init__(self, repository: DocumentRepository, llm_service: LLMService) -> None:
+    def __init__(self, repository: DocumentRepository, llm_service: LLMService, guard_service: GuardService) -> None:
         """Manage document operations.
 
         Args:
             repository (DocumentRepository): Document repository
             llm_service (LLMService): LLM service
+            guard_service (GuardService): Guard service
         """
         self.repository: DocumentRepository = repository
         self.llm_service: LLMService = llm_service
+        self.guard_service: GuardService = guard_service
 
     async def save(self, file: UploadFile) -> str:
         """Save file in directory.
@@ -109,6 +112,9 @@ class DocumentServiceImpl(DocumentService):
         Returns:
             DocumentQueryResponse: _description_
         """
+        if not self.guard_service.is_safe_prompt(request.query):
+            return DocumentQueryResponse(response=ResponseMessage.INVALID_PROMPT, sources=[])
+
         embedding_model: Embedding = EmbeddingModelFactory.get_embedding(OllamaEmbedding)
         query_embeddings: List[List[float]] = embedding_model.encode([request.query])
 
@@ -132,5 +138,8 @@ class DocumentServiceImpl(DocumentService):
 
         handler: TaskHandler = TaskHandlerFactory(self.llm_service).get_handler(LLMTaskType.QA)
         answer: str = handler.handle(context=context_text, query=request.query)
+
+        if not self.guard_service.is_safe_prompt(answer):
+            return DocumentQueryResponse(response=ResponseMessage.INVALID_RESPONSE, sources=[])
 
         return DocumentQueryResponse(response=answer, sources=sources)

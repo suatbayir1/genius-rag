@@ -6,6 +6,7 @@ MODEL_IDS=(
   "ds4sd/SmolDocling-256M-preview"
   "sentence-transformers/all-MiniLM-L6-v2"
   "HuggingFaceTB/SmolVLM-256M-Instruct"
+  "unitary/toxic-bert"
 )
 
 # Base directory
