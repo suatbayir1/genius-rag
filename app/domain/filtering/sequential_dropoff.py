@@ -21,8 +21,8 @@ class SequentialDropOffFilter(DocumentFilter):
             similarity = 1 - distances[i]
             percentage = int(similarity * 100)
 
-            # Do not use this chunk if the cosine distance is greater than 0.80
-            if percentage < 20:
+            # Do not use this chunk if the cosine distance is greater than 0.50
+            if percentage < 50:
                 break
 
             if i == 0:
