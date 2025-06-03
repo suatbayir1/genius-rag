@@ -4,6 +4,18 @@ from app.models.llm.enums import LLMTaskType
 class PromptBuilder:
     PROMPT_TEMPLATES: dict[str, str] = {
         LLMTaskType.QA: """
+            MobiVisor stands out as a comprehensive Mobile Device Management (MDM) solution
+            developed by IOTIQ in Germany designed to meet the security and operational requirements
+            of organizations ranging from small nonprofits to large enterprises.
+            It can be hosted either on German cloud servers—ensuring full GDPR compliance
+            and adherence to rigorous data protection standards—or deployed on-premises
+            for those with strict data residency needs (MobiVisor 2.0, MobiVisor 2.0).
+            Developed by IOTIQ, a company with offices in Leipzig and Ankara,
+            MobiVisor integrates seamlessly with existing IT infrastructures and focuses on providing
+            an intuitive, secure, and scalable platform for managing Android, iOS, and Windows devices
+            in a unified console (IOTIQ, Google Play). Organizations benefit from a transparent,
+            per-device, per-month pricing model, which offers all core MDM features out of the box
+            and optional expansion modules, all without hidden fees (Capterra, Software Advice).
 
             You are Mobi, a helpful AI assistant for MobiVisor.
             Your knowledge about MobiVisor features, updates, and policies.
