@@ -29,6 +29,8 @@ from app.utils.responses import ResponseMessage
 
 logger = get_logger(__name__)
 
+SIMILARITY_THRESHOLD: int = 58
+
 
 class DocumentServiceImpl(DocumentService):
     def __init__(self, repository: DocumentRepository, llm_service: LLMService, guard_service: GuardService) -> None:
@@ -128,7 +130,7 @@ class DocumentServiceImpl(DocumentService):
         metadatas = results.get("metadatas", [[]])[0]
         distances = results.get("distances", [[]])[0]
 
-        filter_strategy = SequentialDropOffFilter()
+        filter_strategy = SequentialDropOffFilter(similarity_threshold=SIMILARITY_THRESHOLD)
         filtered_docs, filtered_meta, filtered_scores = filter_strategy.filter(documents, metadatas, distances)
 
         context_text = "\n\n---\n\n".join(filtered_docs)
