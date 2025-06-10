@@ -114,6 +114,9 @@ class DocumentServiceImpl(DocumentService):
         Returns:
             DocumentQueryResponse: _description_
         """
+        if "mobivisor" in request.query.lower():
+            request.query = request.query.replace("mobivisor", "app").replace("Mobivisor", "app")
+
         if not self.guard_service.is_safe_prompt(request.query):
             return DocumentQueryResponse(response=ResponseMessage.INVALID_PROMPT, sources=[])
 
